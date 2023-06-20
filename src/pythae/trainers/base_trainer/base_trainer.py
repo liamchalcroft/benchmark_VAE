@@ -14,7 +14,7 @@ from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
 from ...customexception import ModelError
-from ...data.datasets import BaseDataset, collate_dataset_output
+from ...data.datasets import BaseDataset, collate_dataset_output, DatasetOutput
 from ...models import BaseAE
 from ..trainer_utils import set_seed
 from ..training_callbacks import (
@@ -554,6 +554,8 @@ class BaseTrainer:
 
                 if not self.ffcv_device:
                     inputs = self._set_inputs_to_device(inputs)
+                else:
+                    inputs = DatasetOutput(data=inputs[0])
 
                 try:
                     with torch.no_grad():
@@ -613,6 +615,8 @@ class BaseTrainer:
 
             if not self.ffcv_device:
                 inputs = self._set_inputs_to_device(inputs)
+            else:
+                inputs = DatasetOutput(data=inputs[0])
 
             with self.amp_context:
                 model_output = self.model(
