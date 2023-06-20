@@ -345,9 +345,6 @@ class BaseTrainer:
 
         inputs_on_device = inputs
 
-        if self.ffcv_device:
-            return inputs_on_device
-
         if self.device == "cuda":
             cuda_inputs = dict.fromkeys(inputs)
 
@@ -555,7 +552,8 @@ class BaseTrainer:
         with self.amp_context:
             for inputs in self.eval_loader:
 
-                inputs = self._set_inputs_to_device(inputs)
+                if not self.ffcv_device:
+                    inputs = self._set_inputs_to_device(inputs)
 
                 try:
                     with torch.no_grad():
@@ -613,7 +611,8 @@ class BaseTrainer:
 
         for inputs in self.train_loader:
 
-            inputs = self._set_inputs_to_device(inputs)
+            if not self.ffcv_device:
+                inputs = self._set_inputs_to_device(inputs)
 
             with self.amp_context:
                 model_output = self.model(
@@ -710,7 +709,8 @@ class BaseTrainer:
 
         with self.amp_context:
             inputs = next(iter(self.eval_loader))
-            inputs = self._set_inputs_to_device(inputs)
+            if not self.ffcv_device:
+                inputs = self._set_inputs_to_device(inputs)
 
             model_out = model(inputs)
             reconstructions = model_out.recon_x.cpu().detach()[
