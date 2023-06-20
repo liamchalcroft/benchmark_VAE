@@ -60,6 +60,7 @@ class BaseTrainer:
         eval_dataset: Optional[BaseDataset] = None,
         training_config: Optional[BaseTrainerConfig] = None,
         callbacks: List[TrainingCallback] = None,
+        ffcv_device = False,
     ):
 
         if training_config is None:
@@ -107,6 +108,7 @@ class BaseTrainer:
             self.amp_context = contextlib.nullcontext()
 
         self.device = device
+        self.ffcv_device = ffcv_device
 
         # place model on device
         model = model.to(device)
@@ -342,6 +344,9 @@ class BaseTrainer:
     def _set_inputs_to_device(self, inputs: Dict[str, Any]):
 
         inputs_on_device = inputs
+
+        if self.ffcv_device:
+            return inputs_on_device
 
         if self.device == "cuda":
             cuda_inputs = dict.fromkeys(inputs)
