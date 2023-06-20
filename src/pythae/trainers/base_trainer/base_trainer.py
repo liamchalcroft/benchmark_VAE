@@ -561,7 +561,7 @@ class BaseTrainer:
                         model_output = self.model(
                             inputs,
                             epoch=epoch,
-                            dataset_size=len(self.eval_loader.dataset),
+                            dataset_size=len(self.val_loader)*self.val_loader.batch_size if self.ffcv_device else len(self.eval_loader.dataset),
                             uses_ddp=self.distributed,
                         )
 
@@ -569,7 +569,7 @@ class BaseTrainer:
                     model_output = self.model(
                         inputs,
                         epoch=epoch,
-                        dataset_size=len(self.eval_loader.dataset),
+                        dataset_size=len(self.val_loader)*self.val_loader.batch_size if self.ffcv_device else len(self.eval_loader.dataset),
                         uses_ddp=self.distributed,
                     )
 
@@ -618,7 +618,7 @@ class BaseTrainer:
                 model_output = self.model(
                     inputs,
                     epoch=epoch,
-                    dataset_size=len(self.train_loader.dataset),
+                    dataset_size=len(self.train_loader)*self.train_loader.batch_size if self.ffcv_device else len(self.train_loader.dataset),
                     uses_ddp=self.distributed,
                 )
 
