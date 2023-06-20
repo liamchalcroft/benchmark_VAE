@@ -616,6 +616,8 @@ class BaseTrainer:
             if not self.ffcv_device:
                 inputs = self._set_inputs_to_device(inputs)
             else:
+                print(inputs[0].shape, inputs[0].dtype)
+                print(inputs[0].min(), inputs[0].mean(), inputs[0].max())
                 inputs = DatasetOutput(data=inputs[0])
 
             with self.amp_context:
